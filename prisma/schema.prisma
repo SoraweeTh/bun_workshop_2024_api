@@ -20,6 +20,8 @@ model User {
   level     String    @default("user")
   createdAt DateTime  @default(now())
   status    String    @default("active")
+  sectionId Int?
+  section   Section?  @relation(fields: [sectionId], references: [id])
 }
 
 model Device {
@@ -31,4 +33,22 @@ model Device {
   remark      String?
   status      String    @default("active")
   createdAt   DateTime  @default(now())
+}
+
+model Department {
+  id        Int       @id @default(autoincrement())
+  name      String
+  status    String    @default("active")
+  createdAt DateTime  @default(now())
+  sections  Section[]
+}
+
+model Section {
+  id            Int         @id @default(autoincrement())
+  name          String
+  departmentId  Int
+  department    Department  @relation(fields: [departmentId], references: [id])
+  status        String      @default("active")
+  createdAt     DateTime    @default(now())
+  users          User[]
 }
