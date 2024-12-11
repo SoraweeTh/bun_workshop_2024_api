@@ -76,7 +76,19 @@ export const UserController = {
                 select: {
                     id: true,
                     username: true,
-                    level: true
+                    level: true,
+                    section: {
+                        select: {
+                            id: true,
+                            name: true,
+                            department: {
+                                select: {
+                                    id: true,
+                                    name: true
+                                }
+                            }
+                        }
+                    }
                 },
                 where: {
                     status: 'active'
@@ -95,7 +107,7 @@ export const UserController = {
             username: string,
             password: string,
             level: string,
-            sectionId: string,
+            sectionId: number,
         },
         params: {
             id: string
@@ -115,7 +127,7 @@ export const UserController = {
                 username: body.username,
                 password: body.password == "" ? oldPass?.password : body.password,
                 level: body.level,
-                sectionId: parseInt(body.sectionId)
+                sectionId: body.sectionId
             };
 
             await prisma.user.update({

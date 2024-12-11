@@ -14,25 +14,27 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  username  String    @unique
-  password  String    
-  level     String    @default("user")
-  createdAt DateTime  @default(now())
-  status    String    @default("active")
-  sectionId Int?
-  section   Section?  @relation(fields: [sectionId], references: [id])
+  id            Int             @id @default(autoincrement())
+  username      String          @unique
+  password      String    
+  level         String          @default("user")
+  createdAt     DateTime        @default(now())
+  status        String          @default("active")
+  sectionId     Int?
+  section       Section?        @relation(fields: [sectionId], references: [id])
+  repairRecord  RepairRecord[]
 }
 
 model Device {
-  id          Int       @id @default(autoincrement())
-  name        String
-  barcode     String
-  serial      String
-  expiredDate DateTime
-  remark      String?
-  status      String    @default("active")
-  createdAt   DateTime  @default(now())
+  id            Int             @id @default(autoincrement())
+  name          String
+  barcode       String
+  serial        String
+  expiredDate   DateTime
+  remark        String?
+  status        String          @default("active")
+  createdAt     DateTime        @default(now())
+  repairRecord  RepairRecord[]
 }
 
 model Department {
@@ -51,4 +53,26 @@ model Section {
   status        String      @default("active")
   createdAt     DateTime    @default(now())
   users          User[]
+}
+
+model RepairRecord {
+  id                Int         @id @default(autoincrement())
+  customerName      String
+  customerPhone     String
+  deviceName        String
+  deviceBarcode     String
+  deviceSerial      String
+  problem           String
+  solving           String
+  deviceId          Int?
+  device            Device?     @relation(fields: [deviceId], references: [id])
+  userId            Int?
+  user              User?       @relation(fields: [userId], references: [id])
+  status            String      @default("active")
+  createdAt         DateTime    @default(now())
+  endJobDate        DateTime?
+  payDate           DateTime?
+  amount            Int?
+  imageBeforeRepair String?
+  imageAfterRepair  String?
 }
