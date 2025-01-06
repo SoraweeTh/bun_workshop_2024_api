@@ -75,4 +75,5 @@ model RepairRecord {
   amount            Int?
   imageBeforeRepair String?
   imageAfterRepair  String?
+  expireDate        DateTime?
 }

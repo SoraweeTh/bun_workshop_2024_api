@@ -147,6 +147,7 @@ export const UserController = {
             username: string,
             password: string,
             level: string,
+            sectionId: number
         }
     }) => {
         try {
@@ -174,6 +175,22 @@ export const UserController = {
             });
 
             return { message: 'success' };
+        } catch (err) {
+            return err;
+        }
+    },
+    listEngineer: async () => {
+        try {
+            return await prisma.user.findMany({
+                where: {
+                    level: 'engineer',
+                    status: 'active'
+                },
+                orderBy: {
+                    username: 'asc'
+                }
+            });
+            
         } catch (err) {
             return err;
         }
