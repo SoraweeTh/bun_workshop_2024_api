@@ -194,5 +194,28 @@ export const UserController = {
         } catch (err) {
             return err;
         }
+    },
+    level: async ({jwt, request}: {
+        jwt: any,
+        request: any
+    }) => {
+        try {
+            const headers = request.headers.get('Authorization');
+            const token = headers?.split(' ')[1];
+            const payload = await jwt.verify(token);
+            const id = payload.id;
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: id
+                },
+                select: {
+                    level: true
+                }
+            });
+            
+            return user?.level;
+        } catch (err) {
+            return err;
+        }
     }
 }

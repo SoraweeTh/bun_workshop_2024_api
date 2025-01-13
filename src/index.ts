@@ -8,6 +8,22 @@ import { SectionController } from "./controllers/SectionController";
 import { RepairRecordController } from "./controllers/RepairRecordController";
 import { CompanyController } from "./controllers/CompanyController";
 
+const checkSignIn = async ({jwt, request, set}: any) => {
+  const token = request.headers.get('Authorization')?.split(' ')[1];
+
+  if (!token) {
+    set.status = 401;
+    return 'Unauthorized';
+  }
+
+  const payload = await jwt.verify(token, 'secret');
+
+  if (!payload) {
+    set.status = 401;
+    return 'Unauthorized';
+  }
+};
+
 const app = new Elysia()
   .use(cors())
   .use(jwt({
@@ -24,6 +40,7 @@ const app = new Elysia()
   .put("/api/user/updateUser/:id", UserController.updateUser)
   .delete("/api/user/remove/:id", UserController.remove)
   .get('/api/user/listEngineer', UserController.listEngineer)
+  .get('/api/user/level', UserController.level)
 
   //  devices
   .post('/api/device/create', DeviceController.create)
@@ -44,9 +61,9 @@ const app = new Elysia()
   .put('/api/repairRecord/receive', RepairRecordController.receive)
   .get('/api/income/report/:startDate/:endDate', RepairRecordController.report)
   .get('/api/repairRecord/dashboard', RepairRecordController.dashboard)
-
+  .get('api/repairRecord/monthlyIncome', RepairRecordController.monthlyIncome)
   // company
-  .get('/api/company/info', CompanyController.info)
+  .get('/api/company/info', CompanyController.info, { beforeHandle: checkSignIn })    // use middleware to check token
   .put('/api/company/update', CompanyController.update)
 
   .listen(3001);
